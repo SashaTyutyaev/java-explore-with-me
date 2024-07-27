@@ -57,8 +57,8 @@ class StatsRepositoryTest {
                 LocalDateTime.now().plusMinutes(10), uris);
         assertNotNull(hits);
         assertEquals(2, hits.size());
-        assertEquals(2, hits.get(0).getHits());
-        assertEquals(3, hits.get(1).getHits());
+        assertEquals(2, hits.get(1).getHits());
+        assertEquals(3, hits.get(0).getHits());
     }
 
     @Test
@@ -67,8 +67,8 @@ class StatsRepositoryTest {
                 LocalDateTime.now().plusMinutes(10));
         assertNotNull(hits);
         assertEquals(2, hits.size());
-        assertEquals(2, hits.get(0).getHits());
-        assertEquals(3, hits.get(1).getHits());
+        assertEquals(2, hits.get(1).getHits());
+        assertEquals(3, hits.get(0).getHits());
     }
 
     private Hit createHit(String app, String uri, String ip) {
