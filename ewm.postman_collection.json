@@ -1,0 +1,257 @@
+{
+	"info": {
+		"_postman_id": "492fe20b-cb87-40d9-98d0-948a998f2dd3",
+		"name": "ewm",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34765368"
+	},
+	"item": [
+		{
+			"name": "Create hit",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Проверка полей Hit\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.app, '\"app\" field').to.eql(\"service\");",
+							"    pm.expect(jsonData.uri, '\"uri\" field').to.eql(\"service/1\");",
+							"    pm.expect(jsonData.ip, '\"ip\" field').to.eql(\"192.110202.09\");",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"app\": \"service\",\n    \"uri\": \"service/1\",\n    \"ip\": \"192.110202.09\",\n    \"timestamp\": \"2024-07-27 22:40:30\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/hit",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"hit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create hit 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Проверка полей Hit\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.app, '\"app\" field').to.eql(\"service\");",
+							"    pm.expect(jsonData.uri, '\"uri\" field').to.eql(\"service/1\");",
+							"    pm.expect(jsonData.ip, '\"ip\" field').to.eql(\"192.110202.09\");",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"app\": \"service\",\n    \"uri\": \"service/1\",\n    \"ip\": \"192.110202.09\",\n    \"timestamp\": \"2024-07-27 22:30:30\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/hit",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"hit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get stats",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Test list hits response\", function () {",
+							"    pm.response.to.be.withBody;",
+							"    pm.response.to.be.json;",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.length, 'List length must be 1').to.eql(1);",
+							"});",
+							"",
+							"pm.test(\"Test hits[0] 'app' field\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData[0]).to.have.property('app');",
+							"    pm.expect(jsonData[0].start, '\"app\"  must be \"' + pm.environment.get('app') + '\"').to.eql(pm.environment.get('app'));",
+							"});",
+							"pm.test(\"Test hits[0] 'uri' field\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData[0]).to.have.property('uri');",
+							"    pm.expect(jsonData[0].end, '\"uri\"  must be \"' + pm.environment.get('uri') + '\"').to.eql(pm.environment.get('uri'));",
+							"});",
+							"pm.test(\"Test hits[0] 'hits' field\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData[0]).to.have.property('hits');",
+							"    pm.expect(jsonData[0].hits, '\"hits\" must be 2').to.eql(2);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/stats?start=2024-07-27 22:00:00&end=2024-07-27 23:50:00&unique=false",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"stats"
+					],
+					"query": [
+						{
+							"key": "start",
+							"value": "2024-07-27 22:00:00"
+						},
+						{
+							"key": "end",
+							"value": "2024-07-27 23:50:00"
+						},
+						{
+							"key": "unique",
+							"value": "false"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get stats unique",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Test list hits response\", function () {",
+							"    pm.response.to.be.withBody;",
+							"    pm.response.to.be.json;",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.length, 'List length must be 1').to.eql(1);",
+							"});",
+							"",
+							"pm.test(\"Test hits[0] 'app' field\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData[0]).to.have.property('app');",
+							"    pm.expect(jsonData[0].start, '\"app\"  must be \"' + pm.environment.get('app') + '\"').to.eql(pm.environment.get('app'));",
+							"});",
+							"pm.test(\"Test hits[0] 'uri' field\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData[0]).to.have.property('uri');",
+							"    pm.expect(jsonData[0].end, '\"uri\"  must be \"' + pm.environment.get('uri') + '\"').to.eql(pm.environment.get('uri'));",
+							"});",
+							"pm.test(\"Test hits[0] 'hits' field\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData[0]).to.have.property('hits');",
+							"    pm.expect(jsonData[0].hits, '\"hits\" must be 2').to.eql(1);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/stats?start=2024-07-27 22:00:00&end=2024-07-27 23:50:00&unique=true",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"stats"
+					],
+					"query": [
+						{
+							"key": "start",
+							"value": "2024-07-27 22:00:00"
+						},
+						{
+							"key": "end",
+							"value": "2024-07-27 23:50:00"
+						},
+						{
+							"key": "unique",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"pm.test(\"Ответ должен быть 200 и данные в формате json\", function() {",
+					"    pm.response.to.be.ok;",
+					"    pm.response.to.be.withBody;",
+					"    pm.response.to.be.json;",
+					"})"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:9090",
+			"type": "string"
+		}
+	]
+}
