@@ -39,7 +39,7 @@ public class EventService {
     private final CategoryRepository categoryRepository;
     private final RequestRepository requestRepository;
 
-    public EventShortDto createEvent(NewEventDto newEventDto, Long userId) {
+    public EventFullDto createEvent(NewEventDto newEventDto, Long userId) {
         validateEventDate(newEventDto.getEventDate());
         if (newEventDto.getPaid() == null) {
             newEventDto.setPaid(false);
@@ -58,7 +58,7 @@ public class EventService {
         event.setState(State.PENDING);
         event.setCreatedOn(LocalDateTime.now());
         log.info("Successfully created new event: {}", event);
-        return EventMapper.toEventShortDto(eventRepository.save(event));
+        return EventMapper.toEventFullDto(eventRepository.save(event));
     }
 
     public List<EventShortDto> getAllEventsByUserId(Long userId, Integer from, Integer size) {

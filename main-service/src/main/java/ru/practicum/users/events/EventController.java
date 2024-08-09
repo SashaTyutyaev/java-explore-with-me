@@ -18,7 +18,7 @@ public class EventController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public EventShortDto createEvent(@PathVariable("userId") Long userId, @Valid @RequestBody NewEventDto event) {
+    public EventFullDto createEvent(@PathVariable("userId") Long userId, @Valid @RequestBody NewEventDto event) {
         return eventService.createEvent(event, userId);
     }
 
