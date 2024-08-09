@@ -23,6 +23,7 @@ import ru.practicum.users.requests.model.dto.RequestMapper;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -57,6 +58,7 @@ public class EventService {
         event.setCategory(category);
         event.setState(State.PENDING);
         event.setCreatedOn(LocalDateTime.now());
+        event.setConfirmedRequests(0);
         log.info("Successfully created new event: {}", event);
         return EventMapper.toEventFullDto(eventRepository.save(event));
     }
@@ -155,34 +157,41 @@ public class EventService {
         getUserById(userId);
         Event event = getEventById(eventId);
         EventRequestStatusUpdateResult result = new EventRequestStatusUpdateResult();
+        List<ParticipationRequestDto> confirmedReqs = new ArrayList<>();
+        List<ParticipationRequestDto> canceledReqs = new ArrayList<>();
         for (Long id : updateRequest.getRequestIds()) {
             Request request = getRequestById(id);
             if (!request.getStatus().equals(RequestStatus.PENDING)) {
                 if (request.getStatus().equals(RequestStatus.CONFIRMED)) {
                     log.error("Request {} already confirmed", id);
                     throw new DataIntegrityViolationException("Request already confirmed");
+                } else {
+                    log.error("Request {} is not pending", id);
+                    throw new IncorrectParameterException("Request " + id + " is not pending");
                 }
-                log.error("Request {} is not pending", id);
-                throw new IncorrectParameterException("Request " + id + " is not pending");
             }
             if (updateRequest.getStatus().equals("CONFIRMED")) {
                 if (event.getConfirmedRequests() >= event.getParticipantLimit()) {
                     log.error("The participant limit is reached");
-                    request.setStatus(RequestStatus.REJECTED);
+                    request.setStatus(RequestStatus.CANCELED);
+                    confirmedReqs.add(RequestMapper.toParticipationRequestDto(request));
+                    requestRepository.save(request);
                     throw new DataIntegrityViolationException("The participant limit is reached");
                 }
                 request.setStatus(RequestStatus.CONFIRMED);
                 event.setConfirmedRequests(event.getConfirmedRequests() + 1);
-                result.getConfirmedRequests().add(RequestMapper.toParticipationRequestDto(request));
+                confirmedReqs.add(RequestMapper.toParticipationRequestDto(request));
                 requestRepository.save(request);
                 log.info("Successfully confirmed request {}", id);
             } else {
-                request.setStatus(RequestStatus.REJECTED);
-                result.getRejectedRequests().add(RequestMapper.toParticipationRequestDto(request));
+                request.setStatus(RequestStatus.CANCELED);
+                canceledReqs.add(RequestMapper.toParticipationRequestDto(request));
                 requestRepository.save(request);
                 log.info("Successfully rejected request {}", id);
             }
         }
+        result.setConfirmedRequests(confirmedReqs);
+        result.setRejectedRequests(canceledReqs);
         eventRepository.save(event);
         return result;
     }

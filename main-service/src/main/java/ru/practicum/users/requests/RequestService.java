@@ -30,7 +30,6 @@ public class RequestService {
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
 
-    @Transactional
     public ParticipationRequestDto createRequest(Long userId, Long eventId) {
         User user = getUserById(userId);
         Event event = getEventById(eventId);
@@ -81,7 +80,6 @@ public class RequestService {
         return RequestMapper.toParticipationRequestDto(request);
     }
 
-    @Transactional
     public ParticipationRequestDto cancelRequest(Long userId, Long requestId) {
         getUserById(userId);
         Request request = getRequestById(requestId);
@@ -90,7 +88,7 @@ public class RequestService {
             event.setConfirmedRequests(event.getConfirmedRequests() - 1);
             eventRepository.save(event);
         }
-        requestRepository.delete(request);
+        request.setStatus(RequestStatus.CANCELED);
         log.info("Request cancelled successful");
         return RequestMapper.toParticipationRequestDto(request);
     }
