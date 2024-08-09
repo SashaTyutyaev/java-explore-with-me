@@ -173,7 +173,7 @@ public class EventService {
                 }
             }
             if (updateRequest.getStatus().equals("CONFIRMED")) {
-                if (event.getConfirmedRequests() >= event.getParticipantLimit()) {
+                if (event.getConfirmedRequests() >= event.getParticipantLimit() && event.getParticipantLimit() != 0) {
                     log.error("The participant limit is reached");
                     request.setStatus(RequestStatus.CANCELED);
                     confirmedReqs.add(RequestMapper.toParticipationRequestDto(request));
