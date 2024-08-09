@@ -26,7 +26,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     List<Event> findAllByInitiatorId(Long initiatorId, Pageable pageable);
 
-    Event findByInitiatorIdAndId(Long initiatorId, Long Id);
+    Event findByInitiatorIdAndId(Long initiatorId, Long id);
 
     @Query("select e from Event e " +
             "where e.paid = true " +
