@@ -53,7 +53,7 @@ public class RequestService {
             throw new DataIntegrityViolationException("Request already exists");
         }
         Request request;
-        if (!event.getRequestModeration()) {
+        if (!event.getRequestModeration() || event.getParticipantLimit() == 0) {
             request = Request.builder()
                     .status(RequestStatus.CONFIRMED)
                     .created(LocalDateTime.now())

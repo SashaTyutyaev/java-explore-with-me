@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import ru.practicum.users.events.model.Location;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
@@ -19,6 +20,7 @@ public class NewEventDto {
 
     @NotNull
     @NotEmpty
+    @NotBlank
     @Length(min = 20, max = 2000)
     private String annotation;
 
@@ -27,6 +29,7 @@ public class NewEventDto {
 
     @NotNull
     @NotEmpty
+    @NotBlank
     @Length(min = 20, max = 7000)
     private String description;
 
@@ -37,16 +40,15 @@ public class NewEventDto {
     @NotNull
     private Location location;
 
-    @NotNull
     private Boolean paid;
 
     @PositiveOrZero
     private Integer participantLimit;
 
-    @NotNull
     private Boolean requestModeration;
 
     @NotNull
     @NotEmpty
+    @Length(min = 3, max = 120)
     private String title;
 }

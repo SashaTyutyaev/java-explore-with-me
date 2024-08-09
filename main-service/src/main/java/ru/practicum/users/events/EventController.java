@@ -1,6 +1,7 @@
 package ru.practicum.users.events;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.users.events.model.Event;
 import ru.practicum.users.events.model.dto.*;
@@ -17,6 +18,7 @@ public class EventController {
     private final EventService eventService;
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public Event createEvent(@PathVariable("userId") Long userId, @Valid @RequestBody NewEventDto event) {
         return eventService.createEvent(event, userId);
     }

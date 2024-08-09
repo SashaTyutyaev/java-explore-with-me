@@ -393,7 +393,7 @@ public class PublicEventService {
         Event event = getEventById(id);
         if (!event.getState().equals(State.PUBLISHED)) {
             log.error("Event {} is not published", id);
-            throw new IncorrectParameterException("Event " + id + " is not published");
+            throw new NotFoundException("Event " + id + " is not published");
         }
         if (viewsRepository.findAllByEventIdAndIp(id, ip).isEmpty()) {
             if (event.getViews() == null) {

@@ -41,6 +41,15 @@ public class EventService {
 
     public Event createEvent(NewEventDto newEventDto, Long userId) {
         validateEventDate(newEventDto.getEventDate());
+        if (newEventDto.getPaid() == null) {
+            newEventDto.setPaid(false);
+        }
+        if (newEventDto.getRequestModeration() == null) {
+            newEventDto.setRequestModeration(true);
+        }
+        if (newEventDto.getParticipantLimit() == null) {
+            newEventDto.setParticipantLimit(0);
+        }
         Event event = EventMapper.toEvent(newEventDto);
         User user = getUserById(userId);
         event.setInitiator(user);
@@ -92,17 +101,17 @@ public class EventService {
             if (updatedEvent.getEventDate() != null) {
                 if (event.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
                     log.error("Event starting soon, too late do changes");
-                    throw new DataIntegrityViolationException("Event starting soon, too late do changes");
+                    throw new IncorrectParameterException("Event starting soon, too late do changes");
                 }
                 if (event.getEventDate().isBefore(LocalDateTime.now())) {
                     log.error("Event is finished");
-                    throw new DataIntegrityViolationException("Event is finished");
+                    throw new IncorrectParameterException("Event is finished");
                 }
                 LocalDateTime updateEventDate = LocalDateTime.parse(updatedEvent.getEventDate(), FORMATTER);
                 if (updateEventDate.isBefore(LocalDateTime.now()) ||
                         updateEventDate.isBefore(LocalDateTime.now().plusHours(2))) {
                     log.error("Cant set event date which is before now or before now + 2 hours");
-                    throw new DataIntegrityViolationException("Cant set event date which is before now + 2 hours");
+                    throw new IncorrectParameterException("Cant set event date which is before now + 2 hours");
                 }
                 event.setEventDate(updateEventDate);
             }
@@ -150,13 +159,13 @@ public class EventService {
             Request request = getRequestById(id);
             if (!request.getStatus().equals(RequestStatus.PENDING)) {
                 log.error("Request {} is not pending", id);
-                throw new DataIntegrityViolationException("Request " + id + " is not pending");
+                throw new IncorrectParameterException("Request " + id + " is not pending");
             }
             if (updateRequest.getStatus().equals("CONFIRMED")) {
                 if (event.getConfirmedRequests() >= event.getParticipantLimit()) {
                     log.error("The participant limit is reached");
                     request.setStatus(RequestStatus.REJECTED);
-                    throw new DataIntegrityViolationException("The participant limit is reached");
+                    throw new IncorrectParameterException("The participant limit is reached");
                 }
                 request.setStatus(RequestStatus.CONFIRMED);
                 event.setConfirmedRequests(event.getConfirmedRequests() + 1);

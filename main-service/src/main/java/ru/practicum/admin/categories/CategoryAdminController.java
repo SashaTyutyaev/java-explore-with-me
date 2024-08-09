@@ -1,6 +1,7 @@
 package ru.practicum.admin.categories;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.admin.categories.model.dto.CategoryDto;
 
@@ -14,6 +15,7 @@ public class CategoryAdminController {
     private final CategoryAdminService categoryAdminService;
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public CategoryDto addCategory(@Valid @RequestBody CategoryDto categoryDto) {
         return categoryAdminService.addCategory(categoryDto);
     }
@@ -24,6 +26,7 @@ public class CategoryAdminController {
     }
 
     @DeleteMapping("{catId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCategory(@PathVariable Long catId) {
         categoryAdminService.deleteCategory(catId);
     }

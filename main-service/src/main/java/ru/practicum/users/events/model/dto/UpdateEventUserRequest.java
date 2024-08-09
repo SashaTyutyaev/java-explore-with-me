@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import ru.practicum.users.events.model.Location;
 
+import javax.validation.constraints.PositiveOrZero;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,6 +29,7 @@ public class UpdateEventUserRequest {
 
     private Boolean paid;
 
+    @PositiveOrZero
     private Integer participantLimit;
 
     private Boolean requestModeration;

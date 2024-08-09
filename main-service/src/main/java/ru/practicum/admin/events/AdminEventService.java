@@ -49,7 +49,7 @@ public class AdminEventService {
         if (updateEvent.getEventDate() != null) {
             if (LocalDateTime.parse(updateEvent.getEventDate(), FORMATTER).isBefore(LocalDateTime.now())) {
                 log.error("Event date is before current date");
-                throw new DataIntegrityViolationException("Event date is before current date");
+                throw new IncorrectParameterException("Event date is before current date");
             }
             event.setEventDate(LocalDateTime.parse(updateEvent.getEventDate(), FORMATTER));
         }
