@@ -40,7 +40,7 @@ public class RequestService {
             log.error("Event is not published");
             throw new DataIntegrityViolationException("Event is not published");
         }
-        if (event.getConfirmedRequests() != null) {
+        if (event.getParticipantLimit() != 0) {
             if (event.getParticipantLimit() <= event.getConfirmedRequests()) {
                 log.error("Participant limit exceeded");
                 throw new DataIntegrityViolationException("Participant limit exceeded");
@@ -51,7 +51,7 @@ public class RequestService {
             throw new DataIntegrityViolationException("Request already exists");
         }
         Request request;
-        if (!event.getRequestModeration() || event.getParticipantLimit() == 0) {
+        if (!event.getRequestModeration()) {
             request = Request.builder()
                     .status(RequestStatus.CONFIRMED)
                     .created(LocalDateTime.now())
