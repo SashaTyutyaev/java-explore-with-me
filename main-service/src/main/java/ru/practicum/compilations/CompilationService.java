@@ -31,11 +31,15 @@ public class CompilationService {
     private final CompilationsEventRepository compilationsEventRepository;
     private final EventRepository eventRepository;
 
-    @Transactional(readOnly = true)
     public List<CompilationDto> getCompilations(Boolean pinned, Integer from, Integer size) {
         List<CompilationDto> result = new ArrayList<>();
+        List<Compilation> compilations;
         Pageable pageable = validatePageable(from, size);
-        List<Compilation> compilations = compilationRepository.findAllByPinned(pinned, pageable);
+        if (pinned == null) {
+            compilations = compilationRepository.findAll(pageable).getContent();
+        } else {
+            compilations = compilationRepository.findAllByPinned(pinned, pageable);
+        }
         for (Compilation compilation : compilations) {
             List<EventShortDto> events = new ArrayList<>();
             List<CompilationEvent> compilationEvents = compilationsEventRepository.findAllByCompilationId(compilation.getId());
@@ -51,7 +55,6 @@ public class CompilationService {
         return result;
     }
 
-    @Transactional(readOnly = true)
     public CompilationDto getCompilation(Long id) {
         Compilation compilation = getCompilationById(id);
         List<EventShortDto> events = new ArrayList<>();

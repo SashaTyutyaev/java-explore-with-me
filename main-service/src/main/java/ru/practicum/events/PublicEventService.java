@@ -35,7 +35,6 @@ public class PublicEventService {
     private final StatsClientService clientService;
     private final ViewsRepository viewsRepository;
 
-    @Transactional
     public List<EventFullDto> getEvents(String text,
                                         List<Integer> categories,
                                         boolean paid,
@@ -388,7 +387,6 @@ public class PublicEventService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
     public EventFullDto getEvent(Long id, String ip, String uri) {
         Event event = getEventById(id);
         if (!event.getState().equals(State.PUBLISHED)) {

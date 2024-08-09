@@ -187,12 +187,12 @@ public class EventService {
         LocalDateTime date = LocalDateTime.parse(eventDate, FORMATTER);
         if (date.isBefore(LocalDateTime.now())) {
             log.error("Date must be in future");
-            throw new DataIntegrityViolationException("Date must be in future");
+            throw new IncorrectParameterException("Date must be in future");
         }
 
         if (date.isBefore(LocalDateTime.now().plusHours(2))) {
             log.error("Date must be in future more than 2 hours");
-            throw new DataIntegrityViolationException("Date must be in future more than 2 hours");
+            throw new IncorrectParameterException("Date must be in future more than 2 hours");
         }
     }
 
