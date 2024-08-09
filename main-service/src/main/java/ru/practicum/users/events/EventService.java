@@ -59,8 +59,10 @@ public class EventService {
         event.setState(State.PENDING);
         event.setCreatedOn(LocalDateTime.now());
         event.setConfirmedRequests(0);
+        event.setViews(0);
         log.info("Successfully created new event: {}", event);
-        return EventMapper.toEventFullDto(eventRepository.save(event));
+        eventRepository.save(event);
+        return EventMapper.toEventFullDto(event);
     }
 
     public List<EventShortDto> getAllEventsByUserId(Long userId, Integer from, Integer size) {
@@ -184,7 +186,7 @@ public class EventService {
                 requestRepository.save(request);
                 log.info("Successfully confirmed request {}", id);
             } else {
-                request.setStatus(RequestStatus.CANCELED);
+                request.setStatus(RequestStatus.REJECTED);
                 canceledReqs.add(RequestMapper.toParticipationRequestDto(request));
                 requestRepository.save(request);
                 log.info("Successfully rejected request {}", id);

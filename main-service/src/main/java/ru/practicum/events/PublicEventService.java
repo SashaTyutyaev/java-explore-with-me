@@ -394,11 +394,7 @@ public class PublicEventService {
             throw new NotFoundException("Event " + id + " is not published");
         }
         if (viewsRepository.findAllByEventIdAndIp(id, ip).isEmpty()) {
-            if (event.getViews() == null) {
-                event.setViews(1);
-            } else {
-                event.setViews(event.getViews() + 1);
-            }
+            event.setViews(event.getViews() + 1);
             repository.save(event);
             Views views = Views.builder()
                     .ip(ip)

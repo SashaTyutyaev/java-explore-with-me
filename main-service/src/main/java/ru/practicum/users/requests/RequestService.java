@@ -59,13 +59,8 @@ public class RequestService {
                     .user(user)
                     .build();
             requestRepository.save(request);
-            if (event.getConfirmedRequests() == null) {
-                event.setConfirmedRequests(1);
-                eventRepository.save(event);
-            } else {
-                event.setConfirmedRequests(event.getConfirmedRequests() + 1);
-                eventRepository.save(event);
-            }
+            event.setConfirmedRequests(event.getConfirmedRequests() + 1);
+            eventRepository.save(event);
         } else {
             request = Request.builder()
                     .status(RequestStatus.PENDING)
