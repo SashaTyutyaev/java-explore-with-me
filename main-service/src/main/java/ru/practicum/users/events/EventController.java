@@ -3,7 +3,6 @@ package ru.practicum.users.events;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.users.events.model.Event;
 import ru.practicum.users.events.model.dto.*;
 import ru.practicum.users.requests.model.dto.ParticipationRequestDto;
 
@@ -19,7 +18,7 @@ public class EventController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Event createEvent(@PathVariable("userId") Long userId, @Valid @RequestBody NewEventDto event) {
+    public EventShortDto createEvent(@PathVariable("userId") Long userId, @Valid @RequestBody NewEventDto event) {
         return eventService.createEvent(event, userId);
     }
 

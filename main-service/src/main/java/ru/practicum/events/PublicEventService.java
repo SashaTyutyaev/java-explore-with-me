@@ -21,7 +21,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +44,9 @@ public class PublicEventService {
                                         int size,
                                         String ip,
                                         String requestUri) {
+        if (sort == null) {
+            sort = "VIEWS";
+        }
 
         if (rangeEnd != null) {
             if (LocalDateTime.parse(rangeEnd, FORMATTER).isBefore(LocalDateTime.parse(rangeStart, FORMATTER))) {
@@ -382,8 +384,7 @@ public class PublicEventService {
                 .build();
         clientService.saveHit(hit);
         log.info("Get all event with params successful");
-        return eventFullDtoList.stream().filter(eventFullDto -> eventFullDto.getState().equals("PUBLISHED"))
-                .collect(Collectors.toList());
+        return eventFullDtoList;
     }
 
     public EventFullDto getEvent(Long id, String ip, String uri) {

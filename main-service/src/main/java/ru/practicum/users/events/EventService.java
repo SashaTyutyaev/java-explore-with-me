@@ -39,7 +39,7 @@ public class EventService {
     private final CategoryRepository categoryRepository;
     private final RequestRepository requestRepository;
 
-    public Event createEvent(NewEventDto newEventDto, Long userId) {
+    public EventShortDto createEvent(NewEventDto newEventDto, Long userId) {
         validateEventDate(newEventDto.getEventDate());
         if (newEventDto.getPaid() == null) {
             newEventDto.setPaid(false);
@@ -58,7 +58,7 @@ public class EventService {
         event.setState(State.PENDING);
         event.setCreatedOn(LocalDateTime.now());
         log.info("Successfully created new event: {}", event);
-        return eventRepository.save(event);
+        return EventMapper.toEventShortDto(eventRepository.save(event));
     }
 
     public List<EventShortDto> getAllEventsByUserId(Long userId, Integer from, Integer size) {
@@ -158,6 +158,10 @@ public class EventService {
         for (Long id : updateRequest.getRequestIds()) {
             Request request = getRequestById(id);
             if (!request.getStatus().equals(RequestStatus.PENDING)) {
+                if (request.getStatus().equals(RequestStatus.CONFIRMED)) {
+                    log.error("Request {} already confirmed", id);
+                    throw new DataIntegrityViolationException("Request already confirmed");
+                }
                 log.error("Request {} is not pending", id);
                 throw new IncorrectParameterException("Request " + id + " is not pending");
             }
@@ -165,7 +169,7 @@ public class EventService {
                 if (event.getConfirmedRequests() >= event.getParticipantLimit()) {
                     log.error("The participant limit is reached");
                     request.setStatus(RequestStatus.REJECTED);
-                    throw new IncorrectParameterException("The participant limit is reached");
+                    throw new DataIntegrityViolationException("The participant limit is reached");
                 }
                 request.setStatus(RequestStatus.CONFIRMED);
                 event.setConfirmedRequests(event.getConfirmedRequests() + 1);
