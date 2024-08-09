@@ -73,7 +73,7 @@ public class UserService {
             throw new IncorrectParameterException("Params must be greater than 0");
         }
 
-        return PageRequest.of(from / size , size);
+        return PageRequest.of(from / size, size);
     }
 
     private void getUserById(Long id) {

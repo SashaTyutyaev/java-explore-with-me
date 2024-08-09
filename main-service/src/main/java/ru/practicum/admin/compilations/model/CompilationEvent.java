@@ -13,7 +13,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name ="compilation_events")
+@Table(name = "compilation_events")
 public class CompilationEvent {
 
     @Id

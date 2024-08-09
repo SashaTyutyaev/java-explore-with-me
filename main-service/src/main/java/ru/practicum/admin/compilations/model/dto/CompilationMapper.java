@@ -12,7 +12,7 @@ public class CompilationMapper {
                 .build();
     }
 
-    public static Compilation toCompilation(NewCompilationDto  newCompilationDto) {
+    public static Compilation toCompilation(NewCompilationDto newCompilationDto) {
         return Compilation.builder()
                 .title(newCompilationDto.getTitle())
                 .build();
