@@ -61,8 +61,8 @@ public class EventService {
         event.setConfirmedRequests(0);
         event.setViews(0);
         log.info("Successfully created new event: {}", event);
-        eventRepository.save(event);
-        return EventMapper.toEventFullDto(event);
+        Event savedEvent = eventRepository.save(event);
+        return EventMapper.toEventFullDto(savedEvent);
     }
 
     public List<EventShortDto> getAllEventsByUserId(Long userId, Integer from, Integer size) {
@@ -132,10 +132,12 @@ public class EventService {
             if (updatedEvent.getRequestModeration() != null) {
                 event.setRequestModeration(updatedEvent.getRequestModeration());
             }
-            if (updatedEvent.getStateAction().equals(StateAction.CANCEL_REVIEW)) {
-                event.setState(State.CANCELED);
-            } else {
-                event.setState(State.PENDING);
+            if (updatedEvent.getStateAction() != null) {
+                if (updatedEvent.getStateAction().equals(StateAction.CANCEL_REVIEW)) {
+                    event.setState(State.CANCELED);
+                } else {
+                    event.setState(State.PENDING);
+                }
             }
             if (updatedEvent.getTitle() != null) {
                 event.setTitle(updatedEvent.getTitle());

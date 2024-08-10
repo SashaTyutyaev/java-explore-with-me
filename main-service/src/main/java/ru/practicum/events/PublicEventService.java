@@ -34,7 +34,7 @@ public class PublicEventService {
     private final ViewsRepository viewsRepository;
 
     public List<EventFullDto> getEvents(String text,
-                                        List<Integer> categories,
+                                        List<Long> categories,
                                         boolean paid,
                                         String rangeStart,
                                         String rangeEnd,

@@ -19,8 +19,8 @@ import ru.practicum.users.events.model.dto.EventMapper;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -95,16 +95,152 @@ public class AdminEventService {
         return EventMapper.toEventFullDto(event);
     }
 
-    public List<EventFullDto> getEvents(List<Integer> initiatorIds, List<String> states,
-                                        List<Integer> categories, String rangeStart, String rangeEnd,
-                                        Integer from, Integer size) {
+    public List<EventFullDto> getEvents(List<Long> users,
+                                        List<String> states,
+                                        List<Long> categories,
+                                        String rangeStart,
+                                        String rangeEnd,
+                                        Integer from,
+                                        Integer size) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         Pageable pageable = validatePageable(from, size);
-        LocalDateTime start = LocalDateTime.parse(rangeStart, FORMATTER);
-        LocalDateTime end = LocalDateTime.parse(rangeEnd, FORMATTER);
-        List<Event> events = eventRepository.findAllByInitiatorIdAndStateAndCategories(initiatorIds, states,
-                categories, start, end, pageable);
-        log.info("Event found: {}", events.size());
-        return events.stream().map(EventMapper::toEventFullDto).collect(Collectors.toList());
+
+        List<Event> eventsList;
+        if (rangeEnd == null) {
+            if (users == null) {
+                if (states == null) {
+                    if (categories == null) {
+                        eventsList = eventRepository.getEventsWithoutTimes(LocalDateTime.now(),
+                                pageable);
+                    } else {
+                        eventsList = eventRepository.getEventsWithCategory(categories,
+                                LocalDateTime.now(),
+                                pageable);
+                    }
+                } else {
+                    List<State> stateList = new ArrayList<>();
+                    for (String str : states) {
+                        stateList.add(State.valueOf(str));
+                    }
+                    if (categories == null) {
+                        eventsList = eventRepository.getEventsWithState(stateList,
+                                LocalDateTime.now(),
+                                pageable);
+                    } else {
+                        eventsList = eventRepository.getEventsWithStateAndCategories(stateList,
+                                categories,
+                                LocalDateTime.now(),
+                                pageable);
+                    }
+                }
+            } else {
+                if (states == null) {
+                    if (categories == null) {
+                        eventsList = eventRepository.getEventsWithUsers(users,
+                                LocalDateTime.now(),
+                                pageable);
+                    } else {
+                        eventsList = eventRepository.getEventsWithUsersAndCategories(users,
+                                categories,
+                                LocalDateTime.now(),
+                                pageable);
+                    }
+                } else {
+                    List<State> stateList = new ArrayList<>();
+                    for (String str : states) {
+                        stateList.add(State.valueOf(str));
+                    }
+                    if (categories == null) {
+                        eventsList = eventRepository.getEventsWithUsersAndState(users,
+                                stateList,
+                                LocalDateTime.now(),
+                                pageable);
+                    } else {
+                        eventsList = eventRepository.getEventsWithUsersAndStatesAndCategoriesWithoutTimes(users,
+                                stateList,
+                                categories,
+                                LocalDateTime.now(),
+                                pageable);
+                    }
+                }
+            }
+        } else {
+            if (users == null) {
+                if (states == null) {
+                    if (categories == null) {
+                        eventsList = eventRepository.getEventsWithTimes(LocalDateTime.parse(rangeStart, formatter),
+                                LocalDateTime.parse(rangeEnd, formatter),
+                                pageable);
+
+                    } else {
+                        eventsList = eventRepository.getEventsWithCategoryAndTimes(categories,
+                                LocalDateTime.parse(rangeStart, formatter),
+                                LocalDateTime.parse(rangeEnd, formatter),
+                                pageable);
+                    }
+                } else {
+                    List<State> stateList = new ArrayList<>();
+                    for (String str : states) {
+                        stateList.add(State.valueOf(str));
+                    }
+                    if (categories == null) {
+                        System.out.println("Мы сюда попадаем?");
+                        eventsList = eventRepository.getEventsWithStateAndTimes(stateList,
+                                LocalDateTime.parse(rangeStart, formatter),
+                                LocalDateTime.parse(rangeEnd, formatter),
+                                pageable);
+                    } else {
+                        eventsList = eventRepository.getEventsWithStateAndCategoriesAndTimes(stateList,
+                                categories,
+                                LocalDateTime.parse(rangeStart, formatter),
+                                LocalDateTime.parse(rangeEnd, formatter),
+                                pageable);
+                    }
+                }
+            } else {
+                if (states == null) {
+                    if (categories == null) {
+                        eventsList = eventRepository.getEventsWithUsersAndTimes(users,
+                                LocalDateTime.parse(rangeStart, formatter),
+                                LocalDateTime.parse(rangeEnd, formatter),
+                                pageable);
+                    } else {
+                        eventsList = eventRepository.getEventsWithUsersAndTimesAndCategories(users,
+                                categories,
+                                LocalDateTime.parse(rangeStart, formatter),
+                                LocalDateTime.parse(rangeEnd, formatter),
+                                pageable);
+                    }
+                } else {
+                    List<State> stateList = new ArrayList<>();
+                    for (String str : states) {
+                        stateList.add(State.valueOf(str));
+                    }
+                    if (categories == null) {
+                        eventsList = eventRepository.getEventsWithUsersAndStatesAndTimes(users,
+                                stateList,
+                                LocalDateTime.parse(rangeStart, formatter),
+                                LocalDateTime.parse(rangeEnd, formatter),
+                                pageable);
+                    } else {
+                        eventsList = eventRepository.getEventsWithUsersAndStatesAndCategoriesAndTimes(users,
+                                stateList,
+                                categories,
+                                LocalDateTime.parse(rangeStart, formatter),
+                                LocalDateTime.parse(rangeEnd, formatter),
+                                pageable);
+                        System.out.println(eventsList.size());
+                    }
+                }
+            }
+        }
+        List<EventFullDto> eventFullDtoList = new ArrayList<>();
+        if (!eventsList.isEmpty()) {
+            for (Event events : eventsList) {
+                eventFullDtoList.add(EventMapper.toEventFullDto(events));
+            }
+        }
+        return eventFullDtoList;
     }
 
     private Event getEventById(Long eventId) {

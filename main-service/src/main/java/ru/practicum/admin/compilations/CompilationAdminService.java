@@ -37,7 +37,7 @@ public class CompilationAdminService {
             compilation.setPinned(true);
         }
         compilationRepository.save(compilation);
-        if (!newCompilationDto.getEvents().isEmpty()) {
+        if (newCompilationDto.getEvents() != null) {
             for (Long eventId : newCompilationDto.getEvents()) {
                 Event event = getEventById(eventId);
                 CompilationEvent compilationEvent = CompilationEvent.builder()

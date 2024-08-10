@@ -5,22 +5,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import ru.practicum.users.events.model.Event;
+import ru.practicum.users.events.model.State;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
-
-    @Query("select e from Event as e " +
-            "where e.initiator.id in ?1 " +
-            "and e.state in ?2 " +
-            "and e.category.id in ?3 " +
-            "and e.eventDate between ?4 and ?5 " +
-            "order by e.id desc ")
-    List<Event> findAllByInitiatorIdAndStateAndCategories(List<Integer> initiatorIds, List<String> states,
-                                                          List<Integer> categories, LocalDateTime rangeStart,
-                                                          LocalDateTime rangeEnd, Pageable pageable);
 
     List<Event> findAllByCategoryId(Long categoryId);
 
@@ -90,7 +81,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "and e.confirmedRequests < e.participantLimit " +
             "and e.eventDate > ?2 " +
             "order by e.views desc")
-    List<Event> getEventsWitchCatAndPaidAndAvailable(List<Integer> categories,
+    List<Event> getEventsWitchCatAndPaidAndAvailable(List<Long> categories,
                                                      LocalDateTime now,
                                                      Pageable pageable);
 
@@ -99,7 +90,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "and e.category.id in ?1 " +
             "and e.eventDate > ?2 " +
             "order by e.views desc")
-    List<Event> getEventsPaidAndCat(List<Integer> categories,
+    List<Event> getEventsPaidAndCat(List<Long> categories,
                                     LocalDateTime now,
                                     Pageable pageable);
 
@@ -108,7 +99,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "and e.confirmedRequests < e.participantLimit " +
             "and e.eventDate > ?2 " +
             "order by e.views desc")
-    List<Event> getEventsAvailableAndCat(List<Integer> categories,
+    List<Event> getEventsAvailableAndCat(List<Long> categories,
                                          LocalDateTime now,
                                          Pageable pageable);
 
@@ -116,7 +107,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "where e.category.id in ?1 " +
             "and e.eventDate > ?2 " +
             "order by e.views desc")
-    List<Event> getEventsAllAndCat(List<Integer> categories,
+    List<Event> getEventsAllAndCat(List<Long> categories,
                                    LocalDateTime now,
                                    Pageable pageable);
 
@@ -126,7 +117,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "and e.confirmedRequests < e.participantLimit " +
             "and e.eventDate > ?2 " +
             "order by e.eventDate desc")
-    List<Event> getEventsWitchCatAndPaidAndAvailableByDate(List<Integer> categories,
+    List<Event> getEventsWitchCatAndPaidAndAvailableByDate(List<Long> categories,
                                                            LocalDateTime now,
                                                            Pageable pageable);
 
@@ -135,7 +126,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "and e.category.id in ?1 " +
             "and e.eventDate > ?2 " +
             "order by e.eventDate desc")
-    List<Event> getEventsPaidAndCatByDate(List<Integer> categories,
+    List<Event> getEventsPaidAndCatByDate(List<Long> categories,
                                           LocalDateTime now,
                                           Pageable pageable);
 
@@ -144,7 +135,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "and e.confirmedRequests < e.participantLimit " +
             "and e.eventDate > ?2 " +
             "order by e.eventDate desc")
-    List<Event> getEventsAvailableAndCatByDate(List<Integer> categories,
+    List<Event> getEventsAvailableAndCatByDate(List<Long> categories,
                                                LocalDateTime now,
                                                Pageable pageable);
 
@@ -152,7 +143,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "where e.category.id in ?1 " +
             "and e.eventDate > ?2 " +
             "order by e.eventDate desc")
-    List<Event> getEventsAllAndCatByDate(List<Integer> categories,
+    List<Event> getEventsAllAndCatByDate(List<Long> categories,
                                          LocalDateTime now,
                                          Pageable pageable);
 
@@ -245,7 +236,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "and e.eventDate > ?3 " +
             "order by e.views desc")
     List<Event> getEventsTextAndCategoriesAndAvailableAndPaid(String text,
-                                                              List<Integer> categories,
+                                                              List<Long> categories,
                                                               LocalDateTime now,
                                                               Pageable pageable);
 
@@ -257,7 +248,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "and e.eventDate > ?3 " +
             "order by e.views desc")
     List<Event> getEventsTextAndCategoriesAndAvailable(String text,
-                                                       List<Integer> categories,
+                                                       List<Long> categories,
                                                        LocalDateTime now,
                                                        Pageable pageable);
 
@@ -269,7 +260,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "and e.eventDate > ?3 " +
             "order by e.views desc")
     List<Event> getEventsTextAndCategoriesAndPaid(String text,
-                                                  List<Integer> categories,
+                                                  List<Long> categories,
                                                   LocalDateTime times,
                                                   Pageable pageable);
 
@@ -280,7 +271,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "and e.eventDate > ?3 " +
             "order by e.views desc")
     List<Event> getEventsTextAndCategories(String text,
-                                           List<Integer> categories,
+                                           List<Long> categories,
                                            LocalDateTime times,
                                            Pageable pageable);
 
@@ -293,7 +284,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "and e.eventDate > ?3 " +
             "order by e.eventDate desc")
     List<Event> getEventsTextAndCategoriesAndAvailableAndPaidByDate(String text,
-                                                                    List<Integer> categories,
+                                                                    List<Long> categories,
                                                                     LocalDateTime now,
                                                                     Pageable pageable);
 
@@ -305,7 +296,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "and e.eventDate > ?3 " +
             "order by e.eventDate desc")
     List<Event> getEventsTextAndCategoriesAndAvailableByDate(String text,
-                                                             List<Integer> categories,
+                                                             List<Long> categories,
                                                              LocalDateTime now,
                                                              Pageable pageable);
 
@@ -317,7 +308,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "and e.eventDate > ?3 " +
             "order by e.eventDate desc")
     List<Event> getEventsTextAndCategoriesAndPaidByDate(String text,
-                                                        List<Integer> categories,
+                                                        List<Long> categories,
                                                         LocalDateTime now,
                                                         Pageable pageable);
 
@@ -328,7 +319,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "and e.eventDate > ?3 " +
             "order by e.eventDate desc")
     List<Event> getEventsTextAndCategoriesByDate(String text,
-                                                 List<Integer> categories,
+                                                 List<Long> categories,
                                                  LocalDateTime now,
                                                  Pageable pageable);
 
@@ -402,7 +393,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "and e.confirmedRequests < e.participantLimit " +
             "and e.eventDate between ?2 and ?3 " +
             "order by e.views desc")
-    List<Event> getEventsWitchCatAndPaidAndAvailable(List<Integer> categories,
+    List<Event> getEventsWitchCatAndPaidAndAvailable(List<Long> categories,
                                                      LocalDateTime start,
                                                      LocalDateTime end,
                                                      Pageable pageable);
@@ -412,7 +403,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "and e.category.id in ?1 " +
             "and e.eventDate between ?2 and ?3 " +
             "order by e.views desc")
-    List<Event> getEventsPaidAndCat(List<Integer> categories,
+    List<Event> getEventsPaidAndCat(List<Long> categories,
                                     LocalDateTime start,
                                     LocalDateTime end,
                                     Pageable pageable);
@@ -422,7 +413,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "and e.confirmedRequests < e.participantLimit " +
             "and e.eventDate between ?2 and ?3 " +
             "order by e.views desc")
-    List<Event> getEventsAvailableAndCat(List<Integer> categories,
+    List<Event> getEventsAvailableAndCat(List<Long> categories,
                                          LocalDateTime start,
                                          LocalDateTime end,
                                          Pageable pageable);
@@ -431,7 +422,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "where e.category.id in ?1 " +
             "and e.eventDate between ?2 and ?3 " +
             "order by e.views desc")
-    List<Event> getEventsAllAndCat(List<Integer> categories,
+    List<Event> getEventsAllAndCat(List<Long> categories,
                                    LocalDateTime start,
                                    LocalDateTime end,
                                    Pageable pageable);
@@ -442,7 +433,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "and e.confirmedRequests < e.participantLimit " +
             "and e.eventDate between ?2 and ?3 " +
             "order by e.eventDate desc")
-    List<Event> getEventsWitchCatAndPaidAndAvailableByDate(List<Integer> categories,
+    List<Event> getEventsWitchCatAndPaidAndAvailableByDate(List<Long> categories,
                                                            LocalDateTime start,
                                                            LocalDateTime end,
                                                            Pageable pageable);
@@ -452,7 +443,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "and e.category.id in ?1 " +
             "and e.eventDate between ?2 and ?3 " +
             "order by e.eventDate desc")
-    List<Event> getEventsPaidAndCatByDate(List<Integer> categories,
+    List<Event> getEventsPaidAndCatByDate(List<Long> categories,
                                           LocalDateTime start,
                                           LocalDateTime end,
                                           Pageable pageable);
@@ -462,7 +453,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "and e.confirmedRequests < e.participantLimit " +
             "and e.eventDate between ?2 and ?3 " +
             "order by e.eventDate desc")
-    List<Event> getEventsAvailableAndCatByDate(List<Integer> categories,
+    List<Event> getEventsAvailableAndCatByDate(List<Long> categories,
                                                LocalDateTime start,
                                                LocalDateTime end,
                                                Pageable pageable);
@@ -471,7 +462,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "where e.category.id in ?1 " +
             "and e.eventDate between ?2 and ?3 " +
             "order by e.eventDate desc")
-    List<Event> getEventsAllAndCatByDate(List<Integer> categories,
+    List<Event> getEventsAllAndCatByDate(List<Long> categories,
                                          LocalDateTime start,
                                          LocalDateTime end,
                                          Pageable pageable);
@@ -573,7 +564,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "and e.eventDate between ?3 and ?4 " +
             "order by e.views desc")
     List<Event> getEventsTextAndCategoriesAndAvailableAndPaid(String text,
-                                                              List<Integer> categories,
+                                                              List<Long> categories,
                                                               LocalDateTime start,
                                                               LocalDateTime end,
                                                               Pageable pageable);
@@ -586,7 +577,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "and e.eventDate between ?3 and ?4 " +
             "order by e.views desc")
     List<Event> getEventsTextAndCategoriesAndAvailable(String text,
-                                                       List<Integer> categories,
+                                                       List<Long> categories,
                                                        LocalDateTime start,
                                                        LocalDateTime end,
                                                        Pageable pageable);
@@ -599,7 +590,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "and e.eventDate between ?3 and ?4 " +
             "order by e.views desc")
     List<Event> getEventsTextAndCategoriesAndPaid(String text,
-                                                  List<Integer> categories,
+                                                  List<Long> categories,
                                                   LocalDateTime start,
                                                   LocalDateTime end,
                                                   Pageable pageable);
@@ -611,7 +602,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "and e.eventDate between ?3 and ?4 " +
             "order by e.views desc")
     List<Event> getEventsTextAndCategories(String text,
-                                           List<Integer> categories,
+                                           List<Long> categories,
                                            LocalDateTime start,
                                            LocalDateTime end,
                                            Pageable pageable);
@@ -625,7 +616,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "and e.eventDate between ?3 and ?4 " +
             "order by e.eventDate desc")
     List<Event> getEventsTextAndCategoriesAndAvailableAndPaidByDate(String text,
-                                                                    List<Integer> categories,
+                                                                    List<Long> categories,
                                                                     LocalDateTime start,
                                                                     LocalDateTime end,
                                                                     Pageable pageable);
@@ -638,7 +629,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "and e.eventDate between ?3 and ?4 " +
             "order by e.eventDate desc")
     List<Event> getEventsTextAndCategoriesAndAvailableByDate(String text,
-                                                             List<Integer> categories,
+                                                             List<Long> categories,
                                                              LocalDateTime start,
                                                              LocalDateTime end,
                                                              Pageable pageable);
@@ -651,7 +642,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "and e.eventDate between ?3 and ?4 " +
             "order by e.eventDate desc")
     List<Event> getEventsTextAndCategoriesAndPaidByDate(String text,
-                                                        List<Integer> categories,
+                                                        List<Long> categories,
                                                         LocalDateTime start,
                                                         LocalDateTime end,
                                                         Pageable pageable);
@@ -663,8 +654,149 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "and e.eventDate between ?3 and ?4 " +
             "order by e.eventDate desc")
     List<Event> getEventsTextAndCategoriesByDate(String text,
-                                                 List<Integer> categories,
+                                                 List<Long> categories,
                                                  LocalDateTime start,
                                                  LocalDateTime end,
                                                  Pageable pageable);
+
+    @Query("select e from Event e " +
+            "where e.initiator.id in ?1 " +
+            "and e.state in ?2 " +
+            "and e.category.id in ?3 " +
+            "and e.eventDate between ?4 and ?5")
+    List<Event> getEventsWithUsersAndStatesAndCategoriesAndTimes(List<Long> users,
+                                                                  List<State> states,
+                                                                  List<Long> categories,
+                                                                  LocalDateTime rangeStart,
+                                                                  LocalDateTime rangeEnd,
+                                                                  Pageable pageable);
+
+    @Query("select e from Event e " +
+            "where e.eventDate between ?1 and ?2")
+    List<Event> getEventsWithTimes(LocalDateTime rangeStart,
+                                    LocalDateTime rangeEnd,
+                                    Pageable pageable);
+
+    @Query("select e from Event e " +
+            "where e.category.id in ?1 " +
+            "and e.eventDate between ?2 and ?3")
+    List<Event> getEventsWithCategoryAndTimes(List<Long> categories,
+                                               LocalDateTime rangeStart,
+                                               LocalDateTime rangeEnd,
+                                               Pageable pageable);
+
+    @Query("select e from Event e " +
+            "where e.state in ?1 " +
+            "and e.category.id in ?2 " +
+            "and e.eventDate between ?3 and ?4")
+    List<Event> getEventsWithStateAndCategoriesAndTimes(List<State> states,
+                                                         List<Long> categories,
+                                                         LocalDateTime rangeStart,
+                                                         LocalDateTime rangeEnd,
+                                                         Pageable pageable);
+
+    @Query("select e from Event e " +
+            "where e.state in ?1 " +
+            "and e.eventDate between ?2 and ?3")
+    List<Event> getEventsWithStateAndTimes(List<State> states,
+                                            LocalDateTime rangeStart,
+                                            LocalDateTime rangeEnd,
+                                            Pageable pageable);
+
+    @Query("select e from Event e " +
+            "where e.initiator.id in ?1 " +
+            "and e.eventDate between ?2 and ?3")
+    List<Event> getEventsWithUsersAndTimes(List<Long> users,
+                                            LocalDateTime rangeStart,
+                                            LocalDateTime rangeEnd,
+                                            Pageable pageable);
+
+    @Query("select e from Event e " +
+            "where e.initiator.id in ?1 " +
+            "and e.category.id in ?2 " +
+            "and e.eventDate between ?3 and ?4")
+    List<Event> getEventsWithUsersAndTimesAndCategories(List<Long> users,
+                                                         List<Long> categories,
+                                                         LocalDateTime rangeStart,
+                                                         LocalDateTime rangeEnd,
+                                                         Pageable pageable);
+
+    @Query("select e from Event e " +
+            "where e.initiator.id in ?1 " +
+            "and e.state in ?2 " +
+            "and e.eventDate between ?3 and ?4")
+    List<Event> getEventsWithUsersAndStatesAndTimes(List<Long> users,
+                                                     List<State> states,
+                                                     LocalDateTime rangeStart,
+                                                     LocalDateTime rangeEnd,
+                                                     Pageable pageable);
+
+    @Query("select e from Event e " +
+            "where e.eventDate > ?1")
+    List<Event> getEventsWithoutTimes(LocalDateTime rangeEnd,
+                                       Pageable pageable);
+
+    @Query("select e from Event e " +
+            "where e.category.id in ?1 " +
+            "and e.eventDate > ?2")
+    List<Event> getEventsWithCategory(List<Long> categories,
+                                       LocalDateTime rangeEnd,
+                                       Pageable pageable);
+
+    @Query("select e from Event e " +
+            "where e.state in ?1 " +
+            "and e.category.id in ?2 " +
+            "and e.eventDate > ?3")
+    List<Event> getEventsWithStateAndCategories(List<State> states,
+                                                 List<Long> categories,
+                                                 LocalDateTime rangeEnd,
+                                                 Pageable pageable);
+
+    @Query("select e from Event e " +
+            "where e.state in ?1 " +
+            "and e.eventDate > ?2")
+    List<Event> getEventsWithState(List<State> states,
+                                    LocalDateTime rangeEnd,
+                                    Pageable pageable);
+
+    @Query("select e from Event e " +
+            "where e.initiator.id in ?1 " +
+            "and e.eventDate > ?2")
+    List<Event> getEventsWithUsers(List<Long> users,
+                                    LocalDateTime rangeEnd,
+                                    Pageable pageable);
+
+    @Query("select e from Event e " +
+            "where e.initiator.id in ?1 " +
+            "and e.category.id in ?2 " +
+            "and e.eventDate > ?3")
+    List<Event> getEventsWithUsersAndCategories(List<Long> users,
+                                                 List<Long> categories,
+                                                 LocalDateTime rangeEnd,
+                                                 Pageable pageable);
+
+    @Query("select e from Event e " +
+            "where e.initiator.id in ?1 " +
+            "and e.state in ?2 " +
+            "and e.eventDate > ?3")
+    List<Event> getEventsWithUsersAndState(List<Long> users,
+                                            List<State> states,
+                                            LocalDateTime rangeEnd,
+                                            Pageable pageable);
+
+    @Query("select e from Event e " +
+            "where e.initiator.id in ?1 " +
+            "and e.state in ?2 " +
+            "and e.category.id in ?3 " +
+            "and e.eventDate > ?4")
+    List<Event> getEventsWithUsersAndStatesAndCategoriesWithoutTimes(List<Long> users,
+                                                                      List<State> states,
+                                                                      List<Long> categories,
+                                                                      LocalDateTime rangeEnd,
+                                                                      Pageable pageable);
+
+    @Query("select e from Event e " +
+            "where e.id in ?1")
+    List<Event> findAll(List<Long> eventsIdList);
 }
+
