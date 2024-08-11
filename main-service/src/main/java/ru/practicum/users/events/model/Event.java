@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import ru.practicum.admin.categories.model.Category;
 import ru.practicum.admin.users.model.User;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Data

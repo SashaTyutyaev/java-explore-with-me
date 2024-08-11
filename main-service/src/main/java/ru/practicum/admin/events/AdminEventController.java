@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.admin.events.model.UpdateEventAdminRequest;
 import ru.practicum.users.events.model.dto.EventFullDto;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
