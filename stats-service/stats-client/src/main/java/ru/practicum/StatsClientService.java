@@ -13,7 +13,7 @@ public class StatsClientService {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    @Value("${service.url}")
+    @Value("${service.url:http://localhost:9090/}")
     private String serviceUrl;
 
     public HitDto saveHit(HitDto hitDto) {
