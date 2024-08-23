@@ -120,10 +120,6 @@ public class CompilationAdminService {
     }
 
     private void checkIfCompilationIsPinned(NewCompilationDto newCompilationDto, Compilation compilation) {
-        if (newCompilationDto.getPinned() == null || !newCompilationDto.getPinned()) {
-            compilation.setPinned(false);
-        } else {
-            compilation.setPinned(true);
-        }
+        compilation.setPinned(newCompilationDto.getPinned() != null && newCompilationDto.getPinned());
     }
 }

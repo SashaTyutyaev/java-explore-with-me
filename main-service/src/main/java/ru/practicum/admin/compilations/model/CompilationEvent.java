@@ -1,12 +1,11 @@
 package ru.practicum.admin.compilations.model;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.users.events.model.Event;
-
-import jakarta.persistence.*;
 
 @Data
 @AllArgsConstructor

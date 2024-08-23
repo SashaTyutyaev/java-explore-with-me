@@ -422,7 +422,7 @@ public class PublicEventService {
     public List<CommentDto> getCommentsByEvent(Long eventId, Integer from, Integer size) {
         Pageable pageable = validatePageable(from, size);
         Event event = getEventById(eventId);
-        return commentRepository.getCommentsByEvent(event,pageable).stream()
+        return commentRepository.getCommentsByEvent(event, pageable).stream()
                 .map(CommentMapper::toCommentDto).collect(Collectors.toList());
     }
 

@@ -1,13 +1,12 @@
 package ru.practicum.admin.compilations;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.admin.compilations.model.dto.CompilationDto;
 import ru.practicum.admin.compilations.model.dto.NewCompilationDto;
 import ru.practicum.admin.compilations.model.dto.UpdateCompilationRequest;
-
-import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/admin/compilations")
