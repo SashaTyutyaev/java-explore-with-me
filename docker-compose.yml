@@ -7,6 +7,7 @@ services:
     depends_on:
       - stats-db
     environment:
+      - SPRING_DRIVER_CLASS_NAME=org.postgresql.Driver
       - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/stats-db
       - SPRING_DATASOURCE_USER=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
@@ -15,7 +16,7 @@ services:
       - "9090:9090"
 
   stats-db:
-    image: postgres:14-alpine
+    image: postgres:16.1
     container_name: stats-db-container
     ports:
       - "5432:5432"
@@ -25,14 +26,45 @@ services:
       - POSTGRES_DB=stats-db
     volumes:
       - ./stats-service/stats-main/src/main/resources/schema.sql:/docker-entrypoint-initdb.d/schema.sql
-      - db-data:/var/lib/postgresql/data
+      - stats-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      retries: 5
+
+  ewm-service:
+    ports:
+      - "8080:8080"
+    build: ./main-service
+    image: mamaiwyd/ewm-main-image:latest
+    container_name: ewm-main-container
+    depends_on:
+      - ewm-db
+    environment:
+      - SPRING_DRIVER_CLASS_NAME=org.postgresql.Driver
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/main-db
+      - SPRING_DATASOURCE_USER=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SERVER_PORT=8080
+      - SERVICE_URL=http://stats-server:9090/
+
+  ewm-db:
+    image: postgres:16.1
+    container_name: main-db-container
+    ports:
+      - "5434:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=main-db
+    volumes:
+      - ./main-service/src/main/resources/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+      - ewm-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      retries: 5
 
 volumes:
-  db-data:
-
-#  ewm-service:
-#    ports:
-#      - "8080:8080"
-#
-#  ewm-db:
-#    image: postgres:14-alpine
+  stats-db-data:
+  ewm-db-data:
