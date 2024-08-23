@@ -31,21 +31,10 @@ public class CompilationAdminService {
     @Transactional
     public CompilationDto addCompilation(NewCompilationDto newCompilationDto) {
         Compilation compilation = CompilationMapper.toCompilation(newCompilationDto);
-        if (newCompilationDto.getPinned() == null || !newCompilationDto.getPinned()) {
-            compilation.setPinned(false);
-        } else {
-            compilation.setPinned(true);
-        }
+        checkIfCompilationIsPinned(newCompilationDto, compilation);
         compilationRepository.save(compilation);
         if (newCompilationDto.getEvents() != null) {
-            for (Long eventId : newCompilationDto.getEvents()) {
-                Event event = getEventById(eventId);
-                CompilationEvent compilationEvent = CompilationEvent.builder()
-                        .compilation(compilation)
-                        .event(event)
-                        .build();
-                compilationsEventRepository.save(compilationEvent);
-            }
+            addEventToCompilationEventRepository(newCompilationDto, compilation);
         }
         List<CompilationEvent> compilationEventList = compilationsEventRepository.findAllByCompilationId(compilation.getId());
         List<EventShortDto> events = new ArrayList<>();
@@ -117,5 +106,24 @@ public class CompilationAdminService {
             log.error("Compilation with id {} not found", compId);
             return new NotFoundException("Compilation with id " + compId + " not found");
         });
+    }
+
+    private void addEventToCompilationEventRepository(NewCompilationDto newCompilationDto, Compilation compilation) {
+        for (Long eventId : newCompilationDto.getEvents()) {
+            Event event = getEventById(eventId);
+            CompilationEvent compilationEvent = CompilationEvent.builder()
+                    .compilation(compilation)
+                    .event(event)
+                    .build();
+            compilationsEventRepository.save(compilationEvent);
+        }
+    }
+
+    private void checkIfCompilationIsPinned(NewCompilationDto newCompilationDto, Compilation compilation) {
+        if (newCompilationDto.getPinned() == null || !newCompilationDto.getPinned()) {
+            compilation.setPinned(false);
+        } else {
+            compilation.setPinned(true);
+        }
     }
 }

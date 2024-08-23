@@ -9,6 +9,9 @@ import ru.practicum.StatsClientService;
 import ru.practicum.dto.HitDto;
 import ru.practicum.exceptions.IncorrectParameterException;
 import ru.practicum.exceptions.NotFoundException;
+import ru.practicum.users.comments.CommentRepository;
+import ru.practicum.users.comments.model.CommentDto;
+import ru.practicum.users.comments.model.CommentMapper;
 import ru.practicum.users.events.EventRepository;
 import ru.practicum.users.events.ViewsRepository;
 import ru.practicum.users.events.model.Event;
@@ -21,6 +24,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +36,7 @@ public class PublicEventService {
     private final EventRepository repository;
     private final StatsClientService clientService;
     private final ViewsRepository viewsRepository;
+    private final CommentRepository commentRepository;
 
     public List<EventFullDto> getEvents(String text,
                                         List<Long> categories,
@@ -412,6 +417,13 @@ public class PublicEventService {
         clientService.saveHit(hit);
         log.info("Get event {} successful", event.getId());
         return EventMapper.toEventFullDto(event);
+    }
+
+    public List<CommentDto> getCommentsByEvent(Long eventId, Integer from, Integer size) {
+        Pageable pageable = validatePageable(from, size);
+        Event event = getEventById(eventId);
+        return commentRepository.getCommentsByEvent(event,pageable).stream()
+                .map(CommentMapper::toCommentDto).collect(Collectors.toList());
     }
 
     private PageRequest validatePageable(Integer from, Integer size) {
