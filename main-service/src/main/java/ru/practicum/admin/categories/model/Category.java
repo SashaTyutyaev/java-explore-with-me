@@ -1,13 +1,12 @@
 package ru.practicum.admin.categories.model;
 
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 
 @Data
 @Builder

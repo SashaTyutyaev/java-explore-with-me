@@ -1,6 +1,7 @@
 package ru.practicum.users.events.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,7 +9,6 @@ import lombok.NoArgsConstructor;
 import ru.practicum.admin.categories.model.Category;
 import ru.practicum.admin.users.model.User;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Data

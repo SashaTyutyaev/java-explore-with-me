@@ -1,4 +1,5 @@
-package ru.practicum.admin.compilations.model.dto;
+package ru.practicum.users.comments.model;
+
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -9,21 +10,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
-import java.util.List;
-
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class NewCompilationDto {
-
-    private List<Long> events;
-
-    private Boolean pinned;
+public class NewCommentDto {
 
     @NotNull
-    @NotEmpty
     @NotBlank
-    @Length(min = 1, max = 50)
-    private String title;
+    @NotEmpty
+    @Length(min = 2, max = 2000)
+    private String text;
 }

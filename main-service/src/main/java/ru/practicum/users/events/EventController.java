@@ -1,12 +1,12 @@
 package ru.practicum.users.events;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.users.events.model.dto.*;
 import ru.practicum.users.requests.model.dto.ParticipationRequestDto;
 
-import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController

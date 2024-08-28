@@ -1,11 +1,10 @@
 package ru.practicum.admin.categories;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.admin.categories.model.dto.CategoryDto;
-
-import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/admin/categories")

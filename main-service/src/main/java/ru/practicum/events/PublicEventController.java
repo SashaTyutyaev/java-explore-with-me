@@ -1,10 +1,11 @@
 package ru.practicum.events;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.users.comments.model.CommentDto;
 import ru.practicum.users.events.model.dto.EventFullDto;
 
-import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -27,11 +28,16 @@ public class PublicEventController {
                                         HttpServletRequest request) {
         return publicEventService.getEvents(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size,
                 request.getRemoteAddr(), request.getRequestURI());
-
     }
 
     @GetMapping("{id}")
     public EventFullDto getEvent(@PathVariable Long id, HttpServletRequest request) {
         return publicEventService.getEvent(id, request.getRemoteAddr(), request.getRequestURI());
+    }
+
+    @GetMapping("{eventId}/comments")
+    public List<CommentDto> getCommentByEvent(@PathVariable Long eventId, @RequestParam(defaultValue = "0") Integer from,
+                                              @RequestParam(defaultValue = "10") Integer size) {
+        return publicEventService.getCommentsByEvent(eventId, from, size);
     }
 }
